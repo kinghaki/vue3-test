@@ -9,7 +9,7 @@ const AppKey = 'VaIEYF4NnTH_OKWEunqEbz6sTgg'
 
 const webTokenRequestV2 = axios.create({
   /** 之後來研究 process.env 寫法 */
-  baseURL: 'https://ptx.transportdata.tw/MOTC'
+  baseURL: 'https://tdx.transportdata.tw/api/basic'
 })
 const webTokenRequestV3 = axios.create({
   /** 之後來研究 process.env 寫法 */

@@ -26,3 +26,7 @@ yarn build
 ## 第三方服務
 * google map api - Maps Embed API
 * TDX api v2 / v3
+
+## 重點
+### defineComponent
+在TypeScript下，給予了元件 正確的引數型別推斷 
