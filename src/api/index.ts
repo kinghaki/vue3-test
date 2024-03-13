@@ -1,14 +1,14 @@
-import axios from 'axios'
-import JsSHA from 'jssha/dist/sha1'
+import { data } from 'autoprefixer'
+import axios, { AxiosRequestConfig } from 'axios'
+import qs from 'qs'
 
 /**
  * axios
  */
-const AppID = 'd5a6593d182e41f5a7a7ecf37394918a'
-const AppKey = 'VaIEYF4NnTH_OKWEunqEbz6sTgg'
 
 const webTokenRequestV2 = axios.create({
   /** 之後來研究 process.env 寫法 */
+  // baseURL 頭
   baseURL: 'https://tdx.transportdata.tw/api/basic'
 })
 const webTokenRequestV3 = axios.create({
@@ -17,41 +17,56 @@ const webTokenRequestV3 = axios.create({
 })
 
 // request攔截器
-webTokenRequestV2.interceptors.request.use(function (config) {
-  // header
-  const UTCString = new Date().toUTCString()
-  const ShaObj = new JsSHA('SHA-1', 'TEXT')
-  ShaObj.setHMACKey(AppKey, 'TEXT')
-  ShaObj.update('x-date: ' + UTCString)
-  const HMAC = ShaObj.getHMAC('B64')
-  const Authorization = 'hmac username="' + AppID + '", algorithm="hmac-sha1", headers="x-date", signature="' + HMAC + '"'
-
-  config.headers = {
-    Authorization: Authorization,
-    'X-Date': UTCString
+webTokenRequestV2.interceptors.request.use(async function (config) {
+  const parameter = {
+    grant_type: 'client_credentials',
+    client_id: 'ian8703031919-38bc5c9f-ace3-4ca5',
+    client_secret: 'e54e1a40-1794-486c-ba19-9909e845c5bf'
   }
-  console.log(config.headers)
-
+  const configs: AxiosRequestConfig = {
+    method: 'post',
+    url: 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token',
+    data: qs.stringify(parameter),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+  let getToken = ''
+  await axios(configs).then(data => {
+    getToken = data.data.access_token
+    console.log(data)
+  })
+  config.headers = {
+    authorization: 'Bearer ' + getToken
+  }
   return config
 }, function (error) {
   console.log('error:: ', error)
   return Promise.reject(error)
 })
-webTokenRequestV3.interceptors.request.use(function (config) {
+webTokenRequestV3.interceptors.request.use(async function (config) {
   // header
-  const GMTString = new Date().toUTCString()
-  const ShaObj = new JsSHA('SHA-1', 'TEXT')
-  ShaObj.setHMACKey(AppKey, 'TEXT')
-  ShaObj.update('x-date: ' + GMTString)
-  const HMAC = ShaObj.getHMAC('B64')
-  const Authorization = 'hmac username="' + AppID + '", algorithm="hmac-sha1", headers="x-date", signature="' + HMAC + '"'
-
-  config.headers = {
-    Authorization: Authorization,
-    'X-Date': GMTString
+  const parameter = {
+    grant_type: 'client_credentials',
+    client_id: 'ian8703031919-38bc5c9f-ace3-4ca5',
+    client_secret: 'e54e1a40-1794-486c-ba19-9909e845c5bf'
   }
-  console.log(config.headers)
-
+  const configs: AxiosRequestConfig = {
+    method: 'post',
+    url: 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token',
+    data: qs.stringify(parameter),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  }
+  let getToken = ''
+  await axios(configs).then(data => {
+    getToken = data.data.access_token
+    console.log(data)
+  })
+  config.headers = {
+    authorization: 'Bearer ' + getToken
+  }
   return config
 }, function (error) {
   console.log('error:: ', error)
